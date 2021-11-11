@@ -23,8 +23,7 @@ RUN curl -LO https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.
     && rm Miniconda3-latest-Linux-x86_64.sh \
     && conda init
 
-#RUN conda install -c pkgs/main -c pytorch pytorch numpy scipy ipython
-#RUN conda env export
+#RUN conda install --strict-channel-priority -c pytorch -c pkgs/main pytorch numpy scipy ipython
 
 COPY --chown=docker:docker environment.yml .
 RUN conda env update -n base -f environment.yml && rm environment.yml && conda clean -afy
