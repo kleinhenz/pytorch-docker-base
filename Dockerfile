@@ -4,7 +4,7 @@ FROM nvidia/cuda:11.0-base as base
 ENV DEBIAN_FRONTEND=noninteractive
 
 # enable sudo
-RUN apt-get update && apt-get install -y --no-install-recommends sudo curl vim
+RUN apt-get update && apt-get install -y --no-install-recommends sudo curl vim && rm -rf /var/lib/apt/lists/*
 
 # create docker user
 RUN useradd -m -s /bin/bash -u 999 docker && echo "docker:docker" | chpasswd && adduser docker sudo
