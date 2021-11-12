@@ -15,15 +15,17 @@ RUN echo "docker ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/docker
 USER    docker
 WORKDIR /home/docker
 
-FROM base as builder
-
-ENV PATH="/home/docker/.local/miniconda/bin:${PATH}"
+ENV PATH="/home/docker/.local/opt/miniconda/bin:${PATH}"
 RUN curl -LO https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-    && bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/.local/miniconda \
+    && bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/.local/opt/miniconda \
     && rm Miniconda3-latest-Linux-x86_64.sh \
     && conda init
 
-#RUN conda install --strict-channel-priority -c pytorch -c pkgs/main pytorch numpy scipy ipython
+# fetch latest
+#RUN --mount=type=cache,target=/home/docker/.local/opt/miniconda/pkgs,uid=999 \
+#    conda install --freeze-installed --strict-channel-priority -c pytorch pytorch::pytorch cudatoolkit numpy scipy ipython tqdm
 
+# install from environment.yml
 COPY --chown=docker:docker environment.yml .
-RUN conda env update -n base -f environment.yml && rm environment.yml && conda clean -afy
+RUN --mount=type=cache,target=/home/docker/.local/opt/miniconda/pkgs,uid=999 \
+    conda env update -n base -f environment.yml
