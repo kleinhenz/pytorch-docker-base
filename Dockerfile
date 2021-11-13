@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends sudo curl vim && rm -rf /var/lib/apt/lists/*
 
 # create docker user
-RUN useradd -m -s /bin/bash -u 999 docker && echo "docker:docker" | chpasswd && adduser docker sudo
+RUN useradd -m -s /bin/bash -u 1999 docker && echo "docker:docker" | chpasswd && adduser docker sudo
 
 # enable passwordless sudo
 RUN echo "docker ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/docker
@@ -27,5 +27,5 @@ RUN curl -LO https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.
 
 # install from environment.yml
 COPY --chown=docker:docker environment.yml .
-RUN --mount=type=cache,target=/home/docker/.local/opt/miniconda/pkgs,uid=999 \
+RUN --mount=type=cache,target=/home/docker/.local/opt/miniconda/pkgs,uid=1999 \
     conda env update -n base -f environment.yml
